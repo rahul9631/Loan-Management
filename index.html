@@ -3,12 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-    <meta name="description" content="An application built with Google AI Studio." />
-    <meta property="og:title" content="My Google AI Studio App" />
-    <meta property="og:description" content="An application built with Google AI Studio." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+    <title>Loan Collection Management System (LCMS)</title>
+    <meta name="description" content="Comprehensive Loan Collection Management System with Admin Panel, Collection Boy Panel, and Customer Portal." />
+    <script>
+      // Safeguard for iframe sandboxes where window.fetch has only a getter
+      try {
+        if (typeof window !== 'undefined') {
+          let _activeFetch = window.fetch ? window.fetch.bind(window) : undefined;
+          Object.defineProperty(window, 'fetch', {
+            get() {
+              return _activeFetch;
+            },
+            set(fn) {
+              _activeFetch = fn;
+            },
+            configurable: true,
+            enumerable: true,
+          });
+        }
+      } catch (e) {
+        // Safe fallback
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
