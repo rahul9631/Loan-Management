@@ -1,0 +1,6 @@
+{
+  "name": "Loan Collection Management System",
+  "description": "Comprehensive Loan Collection Management System with Admin Panel, Collection Boy mobile-friendly panel, and Customer Portal for loan applications and payment tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
