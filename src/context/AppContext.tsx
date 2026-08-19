@@ -111,62 +111,46 @@ const AppContext = createContext<AppContextType | null>(null);
 
 const STORAGE_KEY = 'lcms_app_state_v1';
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // Load initial states from localStorage if present
-  const [users, setUsers] = useState<User[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_users`);
-    return saved ? JSON.parse(saved) : initialUsers;
-  });
+function safeParseJSON<T>(key: string, fallback: T): T {
+  try {
+    const saved = localStorage.getItem(key);
+    if (!saved || saved === 'undefined' || saved === 'null') return fallback;
+    return JSON.parse(saved) as T;
+  } catch (err) {
+    console.warn(`Failed to parse localStorage key "${key}", using fallback.`, err);
+    return fallback;
+  }
+}
 
+export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Load initial states safely
+  const [users, setUsers] = useState<User[]>(() => safeParseJSON(`${STORAGE_KEY}_users`, initialUsers));
   const [currentUserId, setCurrentUserId] = useState<string>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_current_user_id`);
-    return saved || 'user-1';
+    try {
+      const saved = localStorage.getItem(`${STORAGE_KEY}_current_user_id`);
+      return saved && saved !== 'undefined' ? saved : 'user-1';
+    } catch {
+      return 'user-1';
+    }
   });
 
   const [currentView, setCurrentView] = useState<AppView>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_current_view`);
-    return (saved as AppView) || 'admin';
+    try {
+      const saved = localStorage.getItem(`${STORAGE_KEY}_current_view`);
+      return (saved as AppView) || 'admin';
+    } catch {
+      return 'admin';
+    }
   });
 
-  const [customers, setCustomers] = useState<Customer[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_customers`);
-    return saved ? JSON.parse(saved) : initialCustomers;
-  });
-
-  const [loans, setLoans] = useState<Loan[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_loans`);
-    return saved ? JSON.parse(saved) : initialLoans;
-  });
-
-  const [loanPayments, setLoanPayments] = useState<LoanPayment[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_payments`);
-    return saved ? JSON.parse(saved) : initialLoanPayments;
-  });
-
-  const [collectionBoys, setCollectionBoys] = useState<CollectionBoy[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_collection_boys`);
-    return saved ? JSON.parse(saved) : initialCollectionBoys;
-  });
-
-  const [assignments, setAssignments] = useState<CustomerAssignment[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_assignments`);
-    return saved ? JSON.parse(saved) : initialAssignments;
-  });
-
-  const [loanApplications, setLoanApplications] = useState<LoanApplication[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_applications`);
-    return saved ? JSON.parse(saved) : initialLoanApplications;
-  });
-
-  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_logs`);
-    return saved ? JSON.parse(saved) : initialActivityLogs;
-  });
-
-  const [settings, setSettings] = useState<SystemSettings>(() => {
-    const saved = localStorage.getItem(`${STORAGE_KEY}_settings`);
-    return saved ? JSON.parse(saved) : initialSystemSettings;
-  });
+  const [customers, setCustomers] = useState<Customer[]>(() => safeParseJSON(`${STORAGE_KEY}_customers`, initialCustomers));
+  const [loans, setLoans] = useState<Loan[]>(() => safeParseJSON(`${STORAGE_KEY}_loans`, initialLoans));
+  const [loanPayments, setLoanPayments] = useState<LoanPayment[]>(() => safeParseJSON(`${STORAGE_KEY}_payments`, initialLoanPayments));
+  const [collectionBoys, setCollectionBoys] = useState<CollectionBoy[]>(() => safeParseJSON(`${STORAGE_KEY}_collection_boys`, initialCollectionBoys));
+  const [assignments, setAssignments] = useState<CustomerAssignment[]>(() => safeParseJSON(`${STORAGE_KEY}_assignments`, initialAssignments));
+  const [loanApplications, setLoanApplications] = useState<LoanApplication[]>(() => safeParseJSON(`${STORAGE_KEY}_applications`, initialLoanApplications));
+  const [activityLogs, setActivityLogs] = useState<ActivityLog[]>(() => safeParseJSON(`${STORAGE_KEY}_logs`, initialActivityLogs));
+  const [settings, setSettings] = useState<SystemSettings>(() => safeParseJSON(`${STORAGE_KEY}_settings`, initialSystemSettings));
 
   const [activeReceipt, setActiveReceipt] = useState<LoanPayment | null>(null);
 
